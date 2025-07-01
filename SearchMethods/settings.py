@@ -55,7 +55,14 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'SearchMethods.middleware.VercelHeaderFixMiddleware',  # Custom middleware for Vercel
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise for static files
+]
+
+# Only use WhiteNoise in development, not on Vercel
+if not os.getenv('VERCEL'):
+    MIDDLEWARE.append('whitenoise.middleware.WhiteNoiseMiddleware')
+
+# Add remaining middleware
+MIDDLEWARE += [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -143,17 +150,21 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    BASE_DIR / 'static',  
+    os.path.join(BASE_DIR, 'static'),  
 ]
 
-# Static files finders (optional but helpful for development)
+# Static files finders
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 ]
 
-# WhiteNoise configuration for serving static files in production
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Only use WhiteNoise in development, not on Vercel
+if not os.getenv('VERCEL'):
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+else:
+    # On Vercel, let the platform handle static files
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

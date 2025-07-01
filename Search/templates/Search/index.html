@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Visualization</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h2>Graph Controls</h2>
+            
+            <div class="section">
+                <div class="welcome-message">
+                    <p><strong>Welcome!</strong> A sample graph is already loaded. Try different algorithms to find paths from <strong>Start</strong> to <strong>Goal</strong>!</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Add Nodes</h3>
+                <div class="form-row">
+                    <label for="nodeLabel">Node Label:</label>
+                    <input type="text" id="nodeLabel" placeholder="Enter node label">
+                    <button onclick="addNode()">Add Node</button>
+                </div>
+                <div class="limit-info">
+                    <small>Maximum: 20 nodes for optimal performance</small>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Add Edges</h3>
+                <div class="form-row">
+                    <label for="fromNode">From:</label>
+                    <select id="fromNode"></select>
+                </div>
+                <div class="form-row">
+                    <label for="toNode">To:</label>
+                    <select id="toNode"></select>
+                </div>
+                <div class="form-row">
+                    <label for="edgeWeight">Weight:</label>
+                    <input type="number" id="edgeWeight" placeholder="Enter weight">
+                    <button onclick="addEdge()">Add Edge</button>
+                </div>
+                <div class="limit-info">
+                    <small>Maximum: 50 edges for optimal performance</small>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Find Path</h3>
+                <div class="form-row">
+                    <label for="sourceNode">Source:</label>
+                    <select id="sourceNode"></select>
+                </div>
+                <div class="form-row">
+                    <label for="destinationNode">Destination:</label>
+                    <select id="destinationNode"></select>
+                </div>
+                <div class="form-row">
+                    <label for="algorithmSelect">Algorithm:</label>
+                    <select id="algorithmSelect" onchange="updateAlgorithmExplanation()">
+                        <option value="bfs">Breadth-First Search</option>
+                        <option value="dfs">Depth-First Search</option>
+                        <option value="dijkstra">Dijkstra's Algorithm</option>
+                        <option value="a_star">A* Search</option>
+                        <option value="best_first">Best-First Search</option>
+                        <option value="hill_climbing">Hill Climbing</option>
+                    </select>
+                </div>
+                
+                <div class="algorithm-explanation" id="algorithmExplanation">
+                    <h4>Algorithm Overview:</h4>
+                    <p id="algorithmDescription">
+                        <strong>Breadth-First Search (BFS):</strong> Explores nodes level by level, guaranteeing the shortest path in unweighted graphs. Uses a queue (FIFO) to process nodes in the order they were discovered.
+                    </p>
+                </div>
+                <div class="form-row">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="useVisualization" checked>
+                        Show step-by-step visualization
+                    </label>
+                </div>
+                <div class="form-row button-row">
+                    <form action="/process_graph/" method="post" style="display: none;">
+                        {% csrf_token %} 
+                    </form>
+                    <button onclick="sendDataToDjango()" class="primary-btn">Find Path</button>
+                    <button onclick="clearVisualHighlights()" type="button" class="secondary-btn">Clear Path</button>
+                    <button onclick="clearStepInfo()" type="button" class="secondary-btn">Clear Steps</button>
+                </div>
+            </div>
+            
+            <div id="stepInfo" class="step-info"></div>
+            
+            <div class="section">
+                <h3>Graph Actions</h3>
+                <div class="form-row button-row">
+                    <button onclick="resetToDefaultGraph()" type="button" class="info-btn">Reset to Default</button>
+                    <button onclick="clearAllGraph()" type="button" class="danger-btn">Clear All</button>
+                </div>
+            </div>
+            
+            <div id="searchResult" class="result-container"></div>
+        </div>
+        
+        <div class="right-panel">
+            <h2>Graph Visualization</h2>
+            {% comment %} Removed For Now and will be add later {% endcomment %}
+            <!-- Visualization Mode Toggle -->
+            {% comment %} <div class="visualization-controls">
+                <div class="toggle-container">
+                    <label class="toggle-label">
+                        <input type="radio" name="viewMode" value="graph" checked id="graphView">
+                        <span class="toggle-option">📊 Graph View</span>
+                    </label>
+                    <label class="toggle-label">
+                        <input type="radio" name="viewMode" value="tree" id="treeView">
+                        <span class="toggle-option">🌳 Tree View</span>
+                    </label>
+                </div>
+            </div> {% endcomment %}
+            
+            <div class="legend" id="visualizationLegend" style="display: none;">
+                <h4>Visualization Legend:</h4>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #ffeb3b; border: 2px solid #f57f17;"></div>
+                        <span>Currently Exploring</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #ff9800; border: 2px solid #e65100;"></div>
+                        <span>In Frontier (To Explore)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #f44336; border: 2px solid #c62828;"></div>
+                        <span>Explored (Rejected)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background-color: #90EE90; border: 2px solid #228B22;"></div>
+                        <span>Final Path</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Graph Visualization Container -->
+            <div id="network" class="visualization-container"></div>
+            
+            <!-- Tree Visualization Container -->
+            <div id="treeContainer" class="visualization-container tree-container" style="display: none;">
+                <div class="tree-header">
+                    <h4>Tree Structure</h4>
+                    <small>Hierarchical representation of the graph</small>
+                </div>
+                <div id="treeContent" class="tree-content">
+                    <p class="tree-placeholder">Add nodes and edges to see the tree structure</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import all JavaScript modules in correct order -->
+    <!-- 1. Visualization module (handles graph display and manipulation) -->
+    <script type="text/javascript" src="{% static 'js/visualization.js' %}"></script>
+    
+    <!-- 2. UI Manager module (handles user interface and styling) -->
+    <script type="text/javascript" src="{% static 'js/ui-manager.js' %}"></script>
+    
+    <!-- 3. Request Handler module (handles API calls and data processing) -->
+    <script type="text/javascript" src="{% static 'js/request-handler.js' %}"></script>
+</body>
+
+</html>

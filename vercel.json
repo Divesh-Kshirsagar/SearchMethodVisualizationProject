@@ -26,6 +26,7 @@
   ],
   "env": {
     "DJANGO_SETTINGS_MODULE": "SearchMethods.settings",
-    "VERCEL": "1"
+    "VERCEL": "1",
+    "DEBUG": "False"
   }
 }

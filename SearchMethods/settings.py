@@ -147,19 +147,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
+# Standard Django static files configuration
+STATIC_URL = '/static/'
+
 if os.getenv('VERCEL'):
-    # For Vercel deployment
-    STATIC_URL = '/static/'
+    # For Vercel deployment - use standard paths but different storage
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),
     ]
-    # No STATIC_ROOT for Vercel as it handles the files directly
-    STATIC_ROOT = None
+    # Set STATIC_ROOT to a temporary directory for Vercel
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_temp')
     # Use standard static files storage
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 else:
     # For local development
-    STATIC_URL = '/static/'
     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATICFILES_DIRS = [
         os.path.join(BASE_DIR, 'static'),

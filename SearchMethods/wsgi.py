@@ -21,14 +21,9 @@ if os.environ.get('VERCEL'):
     # Initialize Django
     django.setup()
     
-    # Check if static files haven't been collected
-    if not os.path.exists(settings.STATIC_ROOT):
-        try:
-            print("Collecting static files...")
-            execute_from_command_line(['manage.py', 'collectstatic', '--noinput'])
-            print("Static files collected successfully!")
-        except Exception as e:
-            print(f"Warning: Could not collect static files: {e}")
+    # Check if we need to collect static files
+    # Skip the collectstatic step since we're using @vercel/static directly
+    print("Vercel deployment detected - static files are handled separately")
 
 application = get_wsgi_application()
 

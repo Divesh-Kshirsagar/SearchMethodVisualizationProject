@@ -1,0 +1,92 @@
+/* UI Components - Messages, notifications, and informational elements */
+
+/* Welcome and informational messages */
+.welcome-message {
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.welcome-message p {
+    margin: 0;
+}
+
+/* Algorithm explanation */
+.algorithm-explanation {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    color: #495057;
+    padding: 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.4;
+    margin-top: 10px;
+}
+
+.algorithm-explanation h4 {
+    margin: 0 0 8px 0;
+    color: #343a40;
+    font-size: 14px;
+}
+
+.algorithm-explanation p {
+    margin: 0;
+}
+
+.algorithm-explanation strong {
+    color: #007bff;
+}
+
+/* Limit information */
+.limit-info {
+    margin-top: 5px;
+    padding: 5px 8px;
+    background-color: #f8f9fa;
+    border-radius: 3px;
+    border-left: 3px solid #28a745;
+}
+
+.limit-info small {
+    color: #6c757d;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* Result messages */
+.result-container {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.success-message {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.success-message h3 {
+    margin-top: 0;
+    color: #155724;
+    font-size: 18px;
+}
+
+.success-message p, .error-message p {
+    margin: 5px 0;
+    font-size: 14px;
+}

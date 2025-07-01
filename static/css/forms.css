@@ -1,0 +1,119 @@
+/* Form Components - Form inputs, buttons, and controls */
+
+/* Form layout */
+.form-row {
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.button-row {
+    flex-direction: row;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* Labels */
+label {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+}
+
+.checkbox-label {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    font-weight: normal !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
+/* Input fields */
+input, select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #007cba;
+    box-shadow: 0 0 0 2px rgba(0, 124, 186, 0.2);
+}
+
+/* Base button styles */
+button {
+    background-color: #007cba;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #005a87;
+}
+
+button:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background-color: #6c757d;
+}
+
+/* Button variants */
+.primary-btn {
+    background-color: #28a745;
+    flex: 1;
+}
+
+.primary-btn:hover {
+    background-color: #218838;
+}
+
+.secondary-btn {
+    background-color: #dc3545;
+    flex: 1;
+}
+
+.secondary-btn:hover {
+    background-color: #c82333;
+}
+
+.info-btn {
+    background-color: #17a2b8;
+    flex: 1;
+}
+
+.info-btn:hover {
+    background-color: #138496;
+}
+
+.danger-btn {
+    background-color: #dc3545;
+    flex: 1;
+}
+
+.danger-btn:hover {
+    background-color: #c82333;
+}
+
+/* Responsive form adjustments */
+@media (max-width: 768px) {
+    .button-row {
+        flex-direction: column;
+    }
+}

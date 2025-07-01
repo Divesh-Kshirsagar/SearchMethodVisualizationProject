@@ -1,0 +1,66 @@
+/* Step Information - Step-by-step algorithm execution display */
+
+/* Step info container */
+.step-info {
+    background-color: #e3f2fd;
+    border: 1px solid #90caf9;
+    color: #0d47a1;
+    padding: 0;
+    border-radius: 4px;
+    margin: 10px 0;
+    font-size: 14px;
+    min-height: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Step info header */
+.step-info-header {
+    background-color: #1976d2;
+    color: white;
+    padding: 8px 10px;
+    margin: 0;
+    font-size: 14px;
+    border-radius: 4px 4px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* Custom scrollbar for step info */
+.step-info::-webkit-scrollbar {
+    width: 8px;
+}
+
+.step-info::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.step-info::-webkit-scrollbar-thumb {
+    background: #90caf9;
+    border-radius: 4px;
+}
+
+.step-info::-webkit-scrollbar-thumb:hover {
+    background: #64b5f6;
+}
+
+/* Step info content */
+.step-info p {
+    margin: 0;
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(144, 202, 249, 0.3);
+}
+
+.step-info p:last-child {
+    border-bottom: none;
+}
+
+.step-info .timestamp {
+    font-size: 11px;
+    color: #666;
+    font-weight: normal;
+    opacity: 0.8;
+}

@@ -1,0 +1,18 @@
+/* Main Stylesheet - Imports all modular CSS files */
+/* This file serves as the entry point for all styles */
+
+/* Import all component stylesheets in the correct order */
+@import url('base.css');           /* Foundation styles and layout */
+@import url('forms.css');          /* Form controls and buttons */
+@import url('ui-components.css');  /* Messages and informational elements */
+@import url('visualization.css');  /* Graph visualization components */
+@import url('step-info.css');      /* Step-by-step algorithm display */
+
+/* 
+Organization:
+- base.css: Core layout, typography, panels, sections
+- forms.css: Input fields, buttons, form layouts
+- ui-components.css: Messages, notifications, algorithm explanations
+- visualization.css: Graph network, controls, legend
+- step-info.css: Algorithm step tracking and display
+*/

@@ -1,0 +1,15 @@
+venv
+db.sqlite3
+staticfiles
+*/__pycache__
+*/migrations
+.env
+
+# GitHub Pages related files (disabled)
+.nojekyll
+static/index.html
+generate_github_pages.py
+
+# Vercel related files
+.vercel
+node_modules/

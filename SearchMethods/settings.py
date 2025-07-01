@@ -31,7 +31,13 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-for-de
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 # Update ALLOWED_HOSTS for Vercel deployment
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'https://search-method-visualization-project.vercel.app/', '.now.sh']
+if os.getenv('VERCEL'):
+    # In production on Vercel
+    ALLOWED_HOSTS = ['*']  # Allow all hosts on Vercel
+    DEBUG = False  # Force debug off in production
+else:
+    # Local development
+    ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -48,6 +54,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'SearchMethods.middleware.VercelHeaderFixMiddleware',  # Custom middleware for Vercel
     'whitenoise.middleware.WhiteNoiseMiddleware',  # Add WhiteNoise for static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -56,6 +63,13 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Security settings for production
+if os.getenv('VERCEL'):
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 ROOT_URLCONF = 'SearchMethods.urls'
 

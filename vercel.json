@@ -16,6 +16,9 @@
       "dest": "/staticfiles/$1"
     },
     {
+      "handle": "filesystem"
+    },
+    {
       "src": "/(.*)",
       "dest": "SearchMethods/wsgi.py"
     }

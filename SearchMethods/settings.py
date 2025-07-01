@@ -31,7 +31,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-fallback-key-for-de
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 # Update ALLOWED_HOSTS for Vercel deployment
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '.vercel.app/', '.now.sh']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'https://search-method-visualization-project.vercel.app/', '.now.sh']
 
 # Application definition
 

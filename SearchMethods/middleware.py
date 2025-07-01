@@ -5,9 +5,14 @@ Custom middleware for handling Vercel deployment issues
 import logging
 import re
 import os
-from django.http import HttpResponse
+import mimetypes
 
 logger = logging.getLogger(__name__)
+
+# Ensure proper MIME types are registered
+mimetypes.add_type("text/css", ".css")
+mimetypes.add_type("application/javascript", ".js")
+mimetypes.add_type("text/html", ".html")
 
 class VercelHeaderFixMiddleware:
     """
@@ -16,10 +21,17 @@ class VercelHeaderFixMiddleware:
     """
     def __init__(self, get_response):
         self.get_response = get_response
-        # Compile regex for static file extensions
-        self.js_re = re.compile(r'\.js$')
-        self.css_re = re.compile(r'\.css$')
-        self.html_re = re.compile(r'\.html$')
+        # Common static file extensions
+        self.extensions = {
+            '.js': 'application/javascript',
+            '.css': 'text/css',
+            '.html': 'text/html',
+            '.png': 'image/png',
+            '.jpg': 'image/jpeg',
+            '.jpeg': 'image/jpeg',
+            '.gif': 'image/gif',
+            '.svg': 'image/svg+xml',
+        }
 
     def __call__(self, request):
         # Process the request before it reaches the view
@@ -53,23 +65,23 @@ class VercelHeaderFixMiddleware:
     
     def process_response(self, request, response):
         """Ensure response headers are properly formatted and fix MIME types for static files"""
-        # Set standard security headers
-        response['X-Content-Type-Options'] = 'nosniff'
+        path = request.path_info.lower()
         
-        # Fix MIME types for static files
-        if os.getenv('VERCEL') and 'Content-Type' in response:
-            path = request.path_info
+        # Check if this is a static file based on the path
+        if '/static/' in path:
+            # Get the file extension
+            _, ext = os.path.splitext(path)
             
-            # Fix JavaScript files
-            if self.js_re.search(path):
-                response['Content-Type'] = 'application/javascript'
+            # Set the correct MIME type based on extension
+            if ext in self.extensions:
+                response['Content-Type'] = self.extensions[ext]
                 
-            # Fix CSS files
-            elif self.css_re.search(path):
-                response['Content-Type'] = 'text/css'
-                
-            # Fix HTML files
-            elif self.html_re.search(path):
-                response['Content-Type'] = 'text/html; charset=utf-8'
+                # For debugging
+                response['X-Content-Type-Override'] = f"Set to {self.extensions[ext]} for {ext}"
+            
+            # Remove caching headers for static files during debugging
+            response['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            response['Pragma'] = 'no-cache'
+            response['Expires'] = '0'
         
         return response

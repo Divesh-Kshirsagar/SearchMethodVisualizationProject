@@ -8,6 +8,7 @@ import os
 import time
 from django_ratelimit.decorators import ratelimit
 from django.views.decorators.cache import cache_page
+from django.conf import settings
 
 # Add the Algorithms directory to the Python path
 sys.path.append(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'Algorithms'))
@@ -313,3 +314,34 @@ def search_path(request):
             'status': 'error',
             'message': 'Invalid request method'
         }, status=405)
+
+def debug_info(request):
+    """Debug view to help diagnose deployment issues"""
+    static_info = {
+        'STATIC_URL': settings.STATIC_URL,
+        'STATIC_ROOT': settings.STATIC_ROOT,
+        'STATICFILES_DIRS': settings.STATICFILES_DIRS,
+        'STATICFILES_STORAGE': settings.STATICFILES_STORAGE,
+        'VERCEL_ENV': os.environ.get('VERCEL', 'Not set'),
+        'DEBUG': settings.DEBUG,
+        'BASE_DIR': str(settings.BASE_DIR),
+    }
+    
+    # Check if the static files exist
+    static_files = []
+    for static_dir in settings.STATICFILES_DIRS:
+        if os.path.exists(static_dir):
+            for root, dirs, files in os.walk(static_dir):
+                for file in files:
+                    rel_path = os.path.relpath(os.path.join(root, file), static_dir)
+                    static_files.append(rel_path)
+    
+    # Combine all info
+    debug_data = {
+        'static_config': static_info,
+        'static_files_found': static_files[:20],  # Limit to first 20 files
+        'request_headers': dict(request.headers),
+        'request_meta': {k: str(v) for k, v in request.META.items() if k.startswith('HTTP_')},
+    }
+    
+    return JsonResponse(debug_data)

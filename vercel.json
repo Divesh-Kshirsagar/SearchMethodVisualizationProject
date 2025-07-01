@@ -2,11 +2,8 @@
   "version": 2,
   "builds": [
     {
-      "src": "build_static.sh",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "staticfiles"
-      }
+      "src": "static/**",
+      "use": "@vercel/static"
     },
     {
       "src": "SearchMethods/wsgi.py",
@@ -20,14 +17,11 @@
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "/staticfiles/$1"
-    },
-    {
-      "handle": "filesystem"
+      "dest": "/static/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "SearchMethods/wsgi.py"
+      "dest": "/SearchMethods/wsgi.py"
     }
   ],
   "env": {
